@@ -1,10 +1,3 @@
-<!--
- * @Author: glm
- * @Date: 2022-02-11 11:02:37
- * @LastEditors: your Name
- * @LastEditTime: 2022-02-15 11:55:15
- * @Description: 
--->
 <template>
   <div ref="contentBox">
     <slot name="headerInsert"></slot>
@@ -19,13 +12,12 @@
         {{item.className}}
       </div>
       <div class="subContend">
-        <div
+        <slot
           class="singleList"
           v-for=" ele in  item.children"
           :key="ele.id"
-        >
-          {{ele.className}}
-        </div>
+          name="singleItem"
+        ></slot>
       </div>
     </div>
   </div>
@@ -46,7 +38,7 @@ export default {
   },
   mounted () {
     this.scrollListen()
-     window.onresize = ()=>{
+    window.onresize = () => {
       this.scrollListen()
     }
   },
@@ -54,11 +46,11 @@ export default {
     scrollItem (item, nowSubIndex) {
       this.nowIsClickScroll = true
 
-      if(nowSubIndex === 'first'){
+      if (nowSubIndex === 'first') {
         $(this.$refs.contentBox.parentElement).animate({ scrollTop: 0 }, 400, 'swing', () => {
-        this.$emit('scrollSetMenu', this.commonData, this.commonData.children[0])
-        this.nowIsClickScroll = false
-      });
+          this.$emit('scrollSetMenu', this.commonData, this.commonData.children[0])
+          this.nowIsClickScroll = false
+        });
         return
       }
       // 控制当前是点击菜单而滚动，避免执行自定义scroll的事件
@@ -88,8 +80,8 @@ export default {
             return true
           }
         })
-        if(this.ArrOffsetTop[this.ArrOffsetTop.length-1] <  scrollTop){
-         nowIndex = this.ArrOffsetTop.length - 1
+        if (this.ArrOffsetTop[this.ArrOffsetTop.length - 1] < scrollTop) {
+          nowIndex = this.ArrOffsetTop.length - 1
         }
         this.nowIndex = nowIndex
         // 如果是点击菜单则不执行下面设置菜单操作
@@ -98,7 +90,7 @@ export default {
         } else {
           this.$emit('scrollSetMenu', this.commonData, this.commonData.children[nowIndex])
           // 控制左侧菜单变化到对应位置
-          this.$emit('MenuScrollAnimate', nowIndex )
+          this.$emit('MenuScrollAnimate', nowIndex)
         }
 
       })

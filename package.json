@@ -1,6 +1,6 @@
 {
   "name": "lm-menu-scroll",
-  "version": "1.0.3",
+  "version": "1.0.9",
   "description": "基于 Vue 的左右菜单联动组件",
   "main": "dist/lm-menu-scroll.umd.min.js",
   "keyword": "vue menu-scroll",
