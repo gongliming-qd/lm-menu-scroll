@@ -1,16 +1,25 @@
 {
   "name": "lm-menu-scroll",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.3",
+  "description": "基于 Vue 的左右菜单联动组件",
+  "main": "dist/lm-menu-scroll.umd.min.js",
+  "keyword": "vue menu-scroll",
+  "private": false,
+  "files": [
+    "dist"
+  ],
+  "author": "glm",
+  "license": "MIT",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "lib": "vue-cli-service build --target lib --name lm-menu-scroll --dest dist packages/index.js"
   },
   "dependencies": {
     "core-js": "^3.6.5",
-    "vue": "^2.6.11",
-    "vue-router": "^3.2.0"
+    "lodash": "^4.17.21",
+    "vue": "^2.6.11"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -27,6 +36,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "less": "^3.0.4",
     "less-loader": "^5.0.0",
+    "lodash": "^4.17.21",
     "vue-template-compiler": "^2.6.11"
   }
 }

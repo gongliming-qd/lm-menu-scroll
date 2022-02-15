@@ -1,24 +1,19 @@
+
 # lm-menu-scroll
 
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
+```javascript
+1. 基于vue的插件 
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+```javascript
+安装
+npm install lm-menu-scroll -S
 
-### Lints and fixes files
-```
-npm run lint
-```
+导入组件并注册
+import lmMenuScroll from 'lm-menu-scroll'
+import'lm-menu-scroll/dist/lm-menu-scroll.css' 
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+使用
+<lm-menu-scroll></lm-menu-scroll>
+
+```
