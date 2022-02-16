@@ -35,9 +35,7 @@
   </div>
 </template>
 
-
 <script>
-
 // 导入组件
 // 1. 左侧菜单
 import 'jquery'
@@ -48,7 +46,6 @@ export default {
   name: 'lmMenuScroll', // 组件的name属性（后面有提到这里有个坑）
   data () {
     return {
-
       secondMenuList: [],
       currentView: "Common",
       commonData: {
@@ -143,7 +140,7 @@ export default {
       default: () => {
         return [
           {
-            id: '1', className: 'NBA素材', needHeaderInsert:true, icon: true, active: true,
+            id: '1', className: 'NBA素材', needHeaderInsert: true, icon: true, active: true,
             children: [
               {
                 id: 1, className: "收藏", active: true, children: [
@@ -223,7 +220,7 @@ export default {
             ]
           },
           {
-            id: '2', className: "王者素材", needHeaderInsert:false, icon: true, active: false,
+            id: '2', className: "王者素材", needHeaderInsert: false, icon: true, active: false,
             children: [
               {
                 id: 1, className: "孙尚香", active: true, children: [
@@ -580,8 +577,8 @@ export default {
       default: 0
     },
     Collection: {
-      type: Number,
-      default: 1
+      type: String,
+      default: '收藏'
     }
   },
   mounted () {
@@ -600,15 +597,18 @@ export default {
       // 位置滚动
       this.$refs.common.scrollItem(item, index)
     },
+    // 菜单设置对应样式
     scrollSetMenu (father, son) {
       this.$refs.Menu._clickSub(father, son)
     },
+    // 菜单滚动到对应位置
     MenuScrollAnimate (nowIndex) {
       this.$refs.Menu._scrollAnimate(nowIndex)
     }
   },
   components: {
-    Menu, Common
+    Menu, 
+    Common
   }
 }
 </script>

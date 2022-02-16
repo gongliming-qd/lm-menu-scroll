@@ -1,27 +1,45 @@
 <template>
   <div ref="contentBox">
-    <slot v-if="commonData.needHeaderInsert" name="headerInsert"></slot>
+    <slot
+      v-if="commonData.needHeaderInsert"
+      name="headerInsert"
+    ></slot>
     <div
       class="subItem"
       v-for="item in commonData.children"
       :key="item.id"
       :ref="`commonData-${item.id}`"
-      @click="scrollItem(item)"
     >
-      <div v-if="item.className === Collection" class="subTitle">
+      <div
+        v-if="item.className === Collection && (commonData.collect||false) "
+        class="subTitle"
+      >
         {{`${item.className}(${item.children.length})`}}
       </div>
-      <div v-else class="subTitle">
+      <div
+        v-else
+        class="subTitle"
+      >
         {{item.className}}
       </div>
       <div class="subContend">
-        <slot
-          class="singleList"
+        <div
           v-for=" ele in  item.children"
           :key="ele.id"
-          name="singleItem"
-          :item="{son:ele, father:item, gFather:commonData}"
-        ></slot>
+          class="singleList"
+        >
+          <slot
+            name="singleItem"
+            :item="{son:ele, father:item, gFather:commonData}"
+          ></slot>
+        </div>
+
+        <!-- <div
+         class="singleList"
+          v-for=" ele in  item.children"
+          :key="ele.id"
+        >
+        </div> -->
       </div>
     </div>
   </div>
@@ -33,15 +51,18 @@ export default {
   data () {
     return {
       ArrOffsetTop: [], // 所有内容的offersetTop
-      nowIndex: 0,   // 自定义滚动到哪个地方了
-      nowIsClickScroll: false   // 控制当前是否是点击菜单而滚动
+      nowIndex: 0, // 自定义滚动到哪个地方了
+      nowIsClickScroll: false // 控制当前是否是点击菜单而滚动
     }
   },
   watch: {
-    'commonData.id': 'scrollListen'
+    'commonData.id': 'scrollListen',
   },
   mounted () {
     this.scrollListen()
+    // 超级深度监听
+    this.deepWatchCollection()
+    // 
     window.onresize = () => {
       this.scrollListen()
     }
@@ -64,20 +85,16 @@ export default {
         this.nowIsClickScroll = false
       });
     },
-    scrollListen () {
-      this.$nextTick(() => {
-        // 获取所有的offsetTop
-        this.ArrOffsetTop = []
-        this.commonData.children.forEach(item => {
-          this.ArrOffsetTop.push(this.$refs[`commonData-${item.id}`][0].offsetTop)
-        })
-        console.log(this.ArrOffsetTop);
-      })
 
+    async scrollListen () {
+      await this.countOfferSet()
+      
+      // 增加滚动事件
       $(this.$refs.contentBox.parentElement)[0].addEventListener('scroll', (e) => {
         let scrollTop = $(this.$refs.contentBox.parentElement)[0].scrollTop
         let nowIndex = 0
 
+        // 计算当前scrollTop滚动到对应哪里的内容
         this.ArrOffsetTop.some((ele, index) => {
           if (ele > scrollTop) {
             nowIndex = index
@@ -90,7 +107,7 @@ export default {
         this.nowIndex = nowIndex
         // 如果是点击菜单则不执行下面设置菜单操作
         if (this.nowIsClickScroll) {
-          return
+           return
         } else {
           this.$emit('scrollSetMenu', this.commonData, this.commonData.children[nowIndex])
           // 控制左侧菜单变化到对应位置
@@ -99,6 +116,28 @@ export default {
 
       })
 
+    },
+    // 重置当前计算的高度集合ArrOffsetTop
+    countOfferSet () {
+      this.$nextTick(() => {
+        // 获取所有的offsetTop
+        this.ArrOffsetTop = []
+        this.commonData.children.forEach(item => {
+          this.ArrOffsetTop.push(this.$refs[`commonData-${item.id}`][0].offsetTop)
+        })
+        console.log(this.ArrOffsetTop)
+      })
+    },
+    // 超级深度监听收藏行
+    deepWatchCollection () {
+      this.$watch(
+        function () { // 第一个函数就是处理你要监听的属性，只要将其return出去就行
+          return this.commonData.children[0].children
+        },
+        function (old, valold) {
+          this.countOfferSet()
+        }
+      )
     }
   },
   props: {
@@ -106,7 +145,7 @@ export default {
       type: Object
     },
     Collection: {
-      type: Number
+      type: String
     }
   },
   components: {
