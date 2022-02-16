@@ -16,28 +16,33 @@
         :commonData="commonData"
         @scrollSetMenu="scrollSetMenu"
         @MenuScrollAnimate="MenuScrollAnimate"
+        :Collection="Collection"
       >
         <template v-slot:headerInsert>
-          <slot name="headerInsert" :item="commonData"></slot>
+          <slot
+            name="headerInsert"
+            :item="commonData"
+          ></slot>
         </template>
-        <template v-slot:singleItem>
-          <slot name="singleItem" :item="commonData"></slot>
+        <template v-slot:singleItem="{item}">
+          <slot
+            name="singleItem"
+            :item="item"
+          ></slot>
         </template>
       </Common>
     </div>
   </div>
 </template>
 
-<script src="https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/cache/static/protocol/https/jquery/jquery-1.10.2.min_65682a2.js">
-</script>
 
 <script>
 
 // 导入组件
 // 1. 左侧菜单
-
+import 'jquery'
 import Menu from './children/menu/index.vue'
-import Common from "./children/common/index.vue"
+import Common from './children/common/index.vue'
 import _ from 'lodash'
 export default {
   name: 'lmMenuScroll', // 组件的name属性（后面有提到这里有个坑）
@@ -138,11 +143,11 @@ export default {
       default: () => {
         return [
           {
-            id: '1', className: "NBA素材", icon: true, active: true,
+            id: '1', className: 'NBA素材', needHeaderInsert:true, icon: true, active: true,
             children: [
               {
-                id: 1, className: "利明", active: true, children: [
-                  { id: 1, className: "xxx" },
+                id: 1, className: "收藏", active: true, children: [
+                  { id: 1, className: 'xxx' },
                   { id: 2, className: "xxx" },
                   { id: 3, className: "xxx" },
                   { id: 4, className: "xxx" },
@@ -218,7 +223,7 @@ export default {
             ]
           },
           {
-            id: '2', className: "王者素材", icon: true, active: false,
+            id: '2', className: "王者素材", needHeaderInsert:false, icon: true, active: false,
             children: [
               {
                 id: 1, className: "孙尚香", active: true, children: [
@@ -570,9 +575,13 @@ export default {
         ]
       }
     },
-    active:{
-      type:0,
-      default:0
+    active: {
+      type: 0,
+      default: 0
+    },
+    Collection: {
+      type: Number,
+      default: 1
     }
   },
   mounted () {

@@ -1,6 +1,6 @@
 <template>
   <div ref="contentBox">
-    <slot name="headerInsert"></slot>
+    <slot v-if="commonData.needHeaderInsert" name="headerInsert"></slot>
     <div
       class="subItem"
       v-for="item in commonData.children"
@@ -8,7 +8,10 @@
       :ref="`commonData-${item.id}`"
       @click="scrollItem(item)"
     >
-      <div class="subTitle">
+      <div v-if="item.className === Collection" class="subTitle">
+        {{`${item.className}(${item.children.length})`}}
+      </div>
+      <div v-else class="subTitle">
         {{item.className}}
       </div>
       <div class="subContend">
@@ -17,6 +20,7 @@
           v-for=" ele in  item.children"
           :key="ele.id"
           name="singleItem"
+          :item="{son:ele, father:item, gFather:commonData}"
         ></slot>
       </div>
     </div>
@@ -100,6 +104,9 @@ export default {
   props: {
     commonData: {
       type: Object
+    },
+    Collection: {
+      type: Number
     }
   },
   components: {
