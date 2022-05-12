@@ -15,7 +15,6 @@
 </template>
  
 <script>
-import { Tooltip } from 'element-ui'
 export default {
   name: 'ShowTooltips',
   props: {
@@ -58,13 +57,9 @@ export default {
         this.$emit("linkTo")
       }
     }
-  },
-  components:{
-    elTooltip : Tooltip
   }
 }
 </script>
- 
 <style lang="less">
 .contentnowrap {
   overflow: hidden;
@@ -100,4 +95,3 @@ export default {
 }
 
 </style>
-

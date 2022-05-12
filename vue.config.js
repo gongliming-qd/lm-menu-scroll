@@ -3,7 +3,7 @@ module.exports = {
   lintOnSave: false,
   configureWebpack:{
     externals: {
-       vue: 'Vue',
+       vue: 'Vue'
     },
     plugins: [
       new webpack.ProvidePlugin({
