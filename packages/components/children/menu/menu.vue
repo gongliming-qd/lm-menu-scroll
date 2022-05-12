@@ -9,13 +9,14 @@
       <div
         class="secondMenuHeader"
         :class="{active:item.active}"
+        :style="{'color':item.active? activeMenuColor:''}"
         @click="clickTitle(item)"
         :ref="`secondMenuHeader-${item.id}`"
       >
         <i
           class="el-icon-caret-right fontSet"
           :class="{none:!item.icon}"
-        ></i> <span>{{item.className}}</span>
+        ></i> <Tool-tip :content="item.className" placement="right"></Tool-tip>
       </div>
       <!-- 子项 -->
       <template v-if="item.active">
@@ -23,11 +24,12 @@
           class="secondMenuContent"
           :ref="`secondMenuContent-${item.id}-${ele.id}`"
           :class="{active:ele.active && item.active}"
+          :style="{'color':(ele.active && item.active)? activeMenuColor:''}"
           v-for="(ele, index) in item.children"
           :key="ele.id"
-          @click="clickSub(item,ele, index)"
+          @click="clickSub(item, ele, index)"
         >
-          <i class="el-icon-caret-right fontSet"></i> <span class="className">{{ele.className}}</span>
+          <i class="el-icon-caret-right fontSet"></i><Tool-tip :content="ele.className" placement="right"></Tool-tip>
         </div>
       </template>
     </div>
@@ -35,7 +37,8 @@
 </template>
 
 <script>
-import _ from "lodash"
+import ToolTip from '../../components/toolTip/index.vue'
+
 export default {
   name: 'Menu', // 组件的name属性（后面有提到这里有个坑）
   data () {
@@ -49,24 +52,31 @@ export default {
   props: {
     MenuList: {
       type: Array
+    },
+    activeMenuColor: {
+      type: String,
+      default: '#8372ff'
+    },
+    updateIndex: {
+      type: Number
     }
   },
-  watch:{
-    MenuList:{
-      handler:'_initData',
-      deep:true,
-      immediate:true
+  watch: {
+    updateIndex: {
+      handler: '_initData',
+      deep: true,
+      immediate: true
     }
   },
-  created(){
-    window.onresize = ()=>{
+  mounted () {
+    window.onresize = () => {
       this._initData()
     }
   },
   methods: {
     _initData () {
-      this.secondMenuList = _.cloneDeep(this.MenuList)
-      this.$nextTick(()=>{
+      this.secondMenuList = this.MenuList
+      this.$nextTick(() => {
         this.__initScrollTop()
       })
     },
@@ -117,6 +127,7 @@ export default {
     },
     // 控制当前样式变化
     _clickSub (father, son) {
+      console.log(son);
       // 1. 激活父元素，激活子元素
       this.commonAction(father)
       father.children.forEach(ele => {
@@ -125,39 +136,43 @@ export default {
       son.active = true
     },
     // 控制右侧选中
-    _scrollAnimate(nowIndex){
+    _scrollAnimate (nowIndex) {
       console.dir(this.$refs.secondMenu.parentElement);
       // 屏幕高度
       let offsetHeight = this.$refs.secondMenu.parentElement.offsetHeight
       // 当前滚动高度
       let scrollTop = this.$refs.secondMenu.parentElement.scrollTop
       // 选中时的高度
-      let  nowOfferSet =   this.ArrOffsetTop[this.activeIndex+ 1 +  nowIndex ]
+      let nowOfferSet = this.ArrOffsetTop[this.activeIndex + 1 + nowIndex]
 
-       console.log('offsetHeight',offsetHeight);
-      console.log('scrollTop',scrollTop);
-      console.log('nowOfferSet',nowOfferSet);
-       if(nowOfferSet > (offsetHeight + scrollTop)){
+      console.log('offsetHeight', offsetHeight);
+      console.log('scrollTop', scrollTop);
+      console.log('nowOfferSet', nowOfferSet);
+      if (nowOfferSet > (offsetHeight + scrollTop)) {
         //  当前位置 > 屏幕宽度 + 当前滚动高度 （向下滚）
-         let disparity = nowOfferSet - (offsetHeight + scrollTop)
-         console.log(disparity);
-         $(this.$refs.secondMenu.parentElement).scrollTop(scrollTop + disparity + 30)
-       }
-       if(scrollTop > nowOfferSet){
-         // 滚动高度 > 当前位置（向上滚）
-         let disparity = scrollTop - nowOfferSet
-         $(this.$refs.secondMenu.parentElement).scrollTop(scrollTop - disparity - 30)
-       }
+        let disparity = nowOfferSet - (offsetHeight + scrollTop)
+        console.log(disparity);
+        $(this.$refs.secondMenu.parentElement).scrollTop(scrollTop + disparity + 30)
+      }
+      if (scrollTop > nowOfferSet) {
+        // 滚动高度 > 当前位置（向上滚）
+        let disparity = scrollTop - nowOfferSet
+        $(this.$refs.secondMenu.parentElement).scrollTop(scrollTop - disparity - 38)
+      }
     }
   },
+  components: {
+    ToolTip
+  }
 }
 </script>
 
 <style scoped lang="less">
 .secondMenuSub {
-  color: white;
+  color: rgba(255, 255, 255, 0.5);
   .secondMenuHeader {
-    background-color: #343337;
+    display: flex;
+    background-color: #343438;
     padding: 5px 2px;
     border-radius: 2px;
     font-size: 13px;
@@ -168,6 +183,10 @@ export default {
     .fontSet {
       font-size: 8px;
       transition: all 0.3s;
+      margin-right: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .fontSet.none {
       font-size: 8px;
@@ -175,7 +194,6 @@ export default {
     }
   }
   .secondMenuHeader.active {
-    color: #00c1cd !important;
     .fontSet {
       transform: rotate(90deg);
     }
@@ -187,15 +205,19 @@ export default {
     font-size: 13px;
     box-sizing: border-box;
     cursor: pointer;
-    margin-bottom: 12px;
+    margin-bottom: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
     .fontSet {
       font-size: 8px;
       color: transparent;
+      margin-right: 5px;
     }
   }
   .secondMenuContent.active {
     .className {
-      color: #00c1cd !important;
     }
   }
 }
